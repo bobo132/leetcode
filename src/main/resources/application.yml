@@ -1,0 +1,9 @@
+# 应用名称
+spring:
+  application:
+    name: leetcode
+    
+
+server:
+  port: 8200
+
