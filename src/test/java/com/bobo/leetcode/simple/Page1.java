@@ -1,15 +1,34 @@
 package com.bobo.leetcode.simple;
 
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.*;
 
+@Slf4j
 public class Page1 {
 
+    
     @Test
-    public void quest_7() {
+    public void quest_1() {
+        String str = "pwwkew";
+        System.out.println("[两数之和]\n" + str + ":\n" + lengthOfLongestSubstring(str));
+    }
+    
+    
+    
+    @Test
+    public void quest_3() {
+        String str = "pwwkew";
+        System.out.println("[无重复字符的最长子串]\n" + str + ":\n" + lengthOfLongestSubstring(str));
+    }
+
+
+    @Test
+    public void quest_9() {
         int x = 1410110141;
-        boolean b = isPalindrome_2(x);
+        boolean b = isPalindrome_x1(x);
         System.out.println("[回文数]\n" + x + ": " + b);
     }
 
@@ -28,9 +47,21 @@ public class Page1 {
         arr = new String[]{"a", "a", "b"};
         arr = new String[]{"caa", "", "a", "acb"};
         System.out.println("[编写一个函数来查找字符串数组中的最长公共前缀]\n" + Arrays.toString(arr) + ": " + longestCommonPrefix_x1(arr));
-
         
     }
+    
+    @Test
+    public void quest_22() {
+        
+        int n = 3;
+        List<String> list = generateParenthesis(n);
+        log.info("[括号生成]  \nn={}, \nlist={}", n, list);
+    }
+    
+    
+    
+    
+    
 
 
     // 编写一个函数来查找字符串数组中的最长公共前缀
@@ -282,9 +313,108 @@ public class Page1 {
         while (temp != 0) {
             y = y * 10 + temp % 10;
             temp = temp / 10;
+            log.debug("x={},   y={}, temp={}", x, y, temp);
         }
         return y == x;
     }
 
+
+    /*
+     无重复字符的最长子串
+        给定一个字符串 s ，请你找出其中不含有重复字符的最长子串的长度。
+        
+        示例 1 :
+        输入: s = "abcabcbb"
+        输出: 3
+        解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3 。
+        示例 2 :
+        输入: s = "bbbbb"
+        输出: 1
+        解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1 。
+        示例 3 :
+        输入: s = "pwwkew"
+        输出: 3
+        解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3 。
+       
+     */
+
+    /**
+     * 标签: 滑动窗口
+     * 暴力解法的时间复杂度较高, 会达到 O(n^2), 故而采用滑动窗口的方法降低时间复杂度.
+     * 
+     * 步骤
+     *  1. start不动，end向后移动
+     *  2. 当end遇到重复字符，start应该放在上一个重复字符的位置的后一位，同时记录最长的长度
+     *  3. 怎样判断是否遇到重复字符，且怎么知道上一个重复字符的位置？--用哈希字典的key来判断是否重复，用value来记录该字符的位置。
+     * 时间复杂度 O(n)
+     */
+    public int lengthOfLongestSubstring(String s) {
+        int length = s.length();
+        int max = 0;
+
+        Map<Character, Integer> map = new HashMap<>();
+        for (int start = 0, end = 0; end < length; end++) {
+            char element = s.charAt(end);
+            if (map.containsKey(element)) {
+                start = Math.max(map.get(element) + 1, start); //map.get()的地方进行+1操作
+            }
+            max = Math.max(max, end - start + 1);
+            map.put(element, end);
+
+            log.info("      element={}, start={}, end={}, ans={}, map={}", element, start, end, max, JSONUtil.toJsonStr(map));
+        }
+        return max;
+    }
+
+
+
+
+    /*
+    两数之和
+      
+    
+    
+     */
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i< nums.length; i++) {
+            if(map.containsKey(target - nums[i])) {
+                return new int[] {map.get(target-nums[i]),i};
+            }
+            map.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+
+
+
+    // 括号生成
+    public List<String> generateParenthesis(int n) {
+        List<String> list = new ArrayList<>();
+        dfs(list, n, n, "");
+        return list;
+    }
+    
+    public void dfs(List<String> list, int left, int right, String curStr) {
+
+        log.info("left={}, right={}", left, right);
+        if (left == 0 && right == 0) {
+            list.add(curStr);
+            System.out.println();
+            return;
+        }
+
+        if (left > 0) {
+            dfs(list, left -1, right, curStr + "(");
+        }
+
+        if (right > left) {
+            dfs(list, left, right - 1, curStr + ")");
+        }
+    }
+    
+    
+    
 
 }
