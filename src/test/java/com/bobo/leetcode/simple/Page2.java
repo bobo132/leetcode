@@ -37,7 +37,7 @@ public class Page2 {
 
     @Test
     public void quest_70() {
-        int n = 30;
+        int n = 10;
         int target = climbStairs(n);
         log.info("爬楼梯: 总共{}阶, 有{}种方法", n, target);
     }

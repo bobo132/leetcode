@@ -9,19 +9,25 @@ import java.util.*;
 @Slf4j
 public class Page1 {
 
-    
+
     @Test
     public void quest_1() {
         String str = "pwwkew";
         System.out.println("[两数之和]\n" + str + ":\n" + lengthOfLongestSubstring(str));
     }
-    
-    
-    
+
+
     @Test
     public void quest_3() {
         String str = "pwwkew";
         System.out.println("[无重复字符的最长子串]\n" + str + ":\n" + lengthOfLongestSubstring(str));
+    }
+
+
+    @Test
+    public void quest_6() {
+        String str = "0123456789A";
+        System.out.println("[N字形变换]   \n原始=" + str + ",  \n变换=" + convert_2(str, 3));
     }
 
 
@@ -47,21 +53,16 @@ public class Page1 {
         arr = new String[]{"a", "a", "b"};
         arr = new String[]{"caa", "", "a", "acb"};
         System.out.println("[编写一个函数来查找字符串数组中的最长公共前缀]\n" + Arrays.toString(arr) + ": " + longestCommonPrefix_x1(arr));
-        
+
     }
-    
+
     @Test
     public void quest_22() {
-        
+
         int n = 3;
         List<String> list = generateParenthesis(n);
         log.info("[括号生成]  \nn={}, \nlist={}", n, list);
     }
-    
-    
-    
-    
-    
 
 
     // 编写一个函数来查找字符串数组中的最长公共前缀
@@ -341,11 +342,11 @@ public class Page1 {
     /**
      * 标签: 滑动窗口
      * 暴力解法的时间复杂度较高, 会达到 O(n^2), 故而采用滑动窗口的方法降低时间复杂度.
-     * 
+     * <p>
      * 步骤
-     *  1. start不动，end向后移动
-     *  2. 当end遇到重复字符，start应该放在上一个重复字符的位置的后一位，同时记录最长的长度
-     *  3. 怎样判断是否遇到重复字符，且怎么知道上一个重复字符的位置？--用哈希字典的key来判断是否重复，用value来记录该字符的位置。
+     * 1. start不动，end向后移动
+     * 2. 当end遇到重复字符，start应该放在上一个重复字符的位置的后一位，同时记录最长的长度
+     * 3. 怎样判断是否遇到重复字符，且怎么知道上一个重复字符的位置？--用哈希字典的key来判断是否重复，用value来记录该字符的位置。
      * 时间复杂度 O(n)
      */
     public int lengthOfLongestSubstring(String s) {
@@ -367,8 +368,6 @@ public class Page1 {
     }
 
 
-
-
     /*
     两数之和
       
@@ -377,16 +376,14 @@ public class Page1 {
      */
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
-        for(int i = 0; i< nums.length; i++) {
-            if(map.containsKey(target - nums[i])) {
-                return new int[] {map.get(target-nums[i]),i};
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(target - nums[i])) {
+                return new int[]{map.get(target - nums[i]), i};
             }
             map.put(nums[i], i);
         }
         throw new IllegalArgumentException("No two sum solution");
     }
-
-
 
 
     // 括号生成
@@ -395,7 +392,7 @@ public class Page1 {
         dfs(list, n, n, "");
         return list;
     }
-    
+
     public void dfs(List<String> list, int left, int right, String curStr) {
 
         log.info("left={}, right={}", left, right);
@@ -406,15 +403,144 @@ public class Page1 {
         }
 
         if (left > 0) {
-            dfs(list, left -1, right, curStr + "(");
+            dfs(list, left - 1, right, curStr + "(");
         }
 
         if (right > left) {
             dfs(list, left, right - 1, curStr + ")");
         }
     }
-    
-    
-    
 
+
+    /*
+    
+    将一个给定字符串 s 根据给定的行数 numRows，以从上往下、从左到右进行 Z 字形排列。
+    比如输入字符串为 "PAYPALISHIRING" 行数为 3 时，排列如下：
+    
+    P   A   H   N
+    A P L S I I G
+    Y   I   R
+    之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："PAHNAPLSIIGYIR"。
+    
+    请你实现这个将字符串进行指定行数变换的函数：
+    string convert(string s, int numRows);
+    
+     */
+    public String convert(String s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+
+        int n = s.length();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < numRows; i++) {
+            for (int j = i; j < n; j += 2 * (numRows - 1)) {
+                sb.append(s.charAt(j));
+                if (i > 0 && i < numRows - 1) {
+                    int res = j + 2 * (numRows - i - 1);
+                    if (res < n) {
+                        sb.append(s.charAt(res));
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+
+    public String convert_2(String s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        int n = s.length();
+        for (int i = 0; i < numRows; i++) {
+            for (int j = i; j < n; j += (numRows - 1) * 2) {
+                System.out.println("[1]    i = " + i + ", j = " + j);
+                sb.append(s.charAt(j));
+
+                // 除第一行和最后一行外,  中间行都需要插入元素
+                if (i > 0 && i < numRows - 1) {
+                    int sec = j + 2 * (numRows - i - 1);
+                    if (sec < n) {
+                        System.out.println("[2]--> i = " + i + ", j = " + j);
+                        sb.append(s.charAt(sec));
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+    
+    
+    
+    
+    
+    
+    
+    @Test
+    public void checkAnswer() {
+
+        String answer = "CCABA DBBDA\n" +
+                "DCAAC DDCAD\n" +
+                "BADB4 ABDCB\n" +
+                "ADCDB CABCD\n" +
+                "DDDAC DDBBA\n" +
+                "CDDCD ABBBB\n" +
+                "ADDAC BABBB\n" +
+                "ABBBB BBACA\n" +
+                "CABCC CBDAB\n" +
+                "CBBBB BCACB";
+        getScore(answer);
+        
+    }
+    
+    
+    
+    
+    private void getScore(String answer) {
+
+        Map<Integer, String> result = new TreeMap<>();
+
+        List<Character> list =  Arrays.asList(
+                'C', 'C', 'A', 'B', 'A',   'D', 'B', 'B', 'D', 'A',         // 1 ~ 10
+                'D', 'C', 'A', 'A', 'C',   'D', 'D', 'C', 'A', 'D',         // 11 ~ 20  
+                'B', 'A', 'D', 'B', 'A',   'A', 'D', 'D', 'C', 'B',         // 21 ~ 30  
+                'A', 'D', 'C', 'D', 'B',   'C', 'A', 'B', 'C', 'D',         // 31 ~ 40  
+                'D', 'D', 'D', 'A', 'C',   'D', 'D', 'B', 'B', 'A',         // 41 ~ 50  
+                'C', 'D', 'D', 'C', 'D',   'A', 'B', 'B', 'B', 'B',         // 51 ~ 60  
+                'A', 'D', 'D', 'A', 'C',   'B', 'C', 'B', 'B', 'B',         // 61 ~ 70  
+                'A', 'B', 'B', 'B', 'B',   'B', 'B', 'A', 'C', 'A',         // 71 ~ 90  
+                'C', 'A', 'B', 'C', 'B',   'C', 'B', 'D', 'C', 'B',         // 81 ~ 90
+                'C', 'B', 'B', 'B', 'B',   'B', 'C', 'A', 'D', 'B'          // 91 ~ 100
+        );
+
+        answer = answer.replace("\n", "");
+        answer = answer.replace(" ", "");
+        answer = answer.toUpperCase();
+        
+        int score = 100;
+        for (int i = 0; i < answer.length(); i++) {
+            char c = answer.charAt(i);
+            if (c != list.get(i)) {
+                score--;
+                result.put(i + 1, "正确答案:" + list.get(i) + ",  你的答案:" + c);
+            }
+        }
+
+        System.out.println("你的分数为: " + score);
+
+        for (Map.Entry<Integer, String> entry : result.entrySet()) {
+            System.out.println("第" + entry.getKey() + "题: " + entry.getValue());
+        }
+        
+    }
+    
+    
+    
+    
+    
 }
