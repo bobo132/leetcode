@@ -303,6 +303,24 @@ public class Page1 {
         return target == x;
     }
 
+    public boolean isPalindrome_4(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        int temp = x;
+        int target = 0;
+
+        while (temp != 0) {
+            target = target * 10 + temp % 10;
+            temp = temp / 10;
+        }
+
+        return target == x;
+    }
+
+
+
     // 回文数
     public boolean isPalindrome_x1(int x) {
         if (x < 0)
